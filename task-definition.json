@@ -1,0 +1,36 @@
+[
+    {
+      "name": "${container_name}",
+      "image": "${image}",
+      "essential": true,
+  
+      "portMappings": [
+        {
+          "containerPort": ${container_port},
+          "hostPort": ${container_port},
+          "protocol": "tcp"
+        }
+      ],
+  
+      "logConfiguration": {
+        "logDriver": "awslogs",
+  
+        "options": {
+          "awslogs-group": "${log_group}",
+          "awslogs-region": "${aws_region}",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+  
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:${container_port}/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 30
+      }
+    }
+  ]
